@@ -1,0 +1,31 @@
+Author: Pino Toscano <pino@debian.org>
+Description: Ignore failures on GNU/Hurd in KMemoryInfoTest
+ KMemoryInfo is not implemented on GNU/Hurd yet, and thus the tests for it
+ currently fail. Since KMemoryInfo was implemented more than 2 years ago,
+ technically it has always been "broken". Hence, ignore the failures for it,
+ waiting for a proper implementation.
+Forwarded: not-needed
+Last-Update: 2024-08-18
+
+--- a/autotests/kmemoryinfotest.cpp
++++ b/autotests/kmemoryinfotest.cpp
+@@ -21,6 +21,9 @@ KMemoryInfoTest::KMemoryInfoTest(QObject
+ 
+ void KMemoryInfoTest::isNull()
+ {
++#ifdef Q_OS_HURD
++    QEXPECT_FAIL("", "KMemoryInfoTest is not implemented on Hurd yet", Abort);
++#endif
+     KMemoryInfo m;
+     QVERIFY(!m.isNull());
+ }
+@@ -32,6 +35,9 @@ void KMemoryInfoTest::operators()
+     QVERIFY(m == m1);
+ 
+     // paranoia check
++#ifdef Q_OS_HURD
++    QEXPECT_FAIL("", "KMemoryInfoTest is not implemented on Hurd yet", Abort);
++#endif
+     QVERIFY(m.totalPhysical() != 0);
+     QCOMPARE(m.totalPhysical(), m1.totalPhysical());
+ }
